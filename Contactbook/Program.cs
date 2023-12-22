@@ -1,30 +1,12 @@
 ﻿using Contactbook.Interfaces;
 using Contactbook.Models;
+using Contactbook.Services;
 using Newtonsoft.Json;
 
 
-Console.WriteLine("Welcome to your phonebook.");
-Console.ReadKey();
+IMenuService menuService = new MenuServices();
 
-string command = "";
-while (command != "exit")
-{
-    Console.Clear();
-    Console.WriteLine("Please enter a command: ");
-    command = Console.ReadLine().ToLower();
-    switch (command)
-    {
-        case "add":
-            CreateContact.ContactList();
-            break;
-        //case "remove":
-        //    RemovePerson();
-        //    break;
-        //case "list":
-        //    ListPeople();
-        //    break;
-    }
-}
+menuService.ShowMainMenu();
 
 //var contacts = new List<IContacts>
 //{
