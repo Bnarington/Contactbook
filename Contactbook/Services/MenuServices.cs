@@ -9,7 +9,7 @@ public interface IMenuService
 {
     void ShowMainMenu();
 }
-public class MenuServices : IMenuService
+public class MenuServices : IMenuService //This class provides all Navigation in the program.
 {
     private readonly IContactService _contactService = new ContactService();
     public void ShowMainMenu()
@@ -19,12 +19,22 @@ public class MenuServices : IMenuService
         Console.WriteLine();
         Console.WriteLine($"{"1. ", -3} Add a contact");
         Console.WriteLine($"{"2. ",-3} List contacts");
-        Console.WriteLine($"{"3. ",-3} Remove a contact");
-        Console.WriteLine($"{"0. ",-3} Exit the application");
+        Console.WriteLine($"{"3. ",-3} View detalied information about a contact");
+        Console.WriteLine($"{"4. ",-3} Remove a contact");
+        Console.WriteLine($"{"5. ",-3} Exit the application");
+        Console.WriteLine();
 
         string command = "";
         while (command != "0")
         {
+            MenuTitle("MAIN MENU");
+            Console.WriteLine();
+            Console.WriteLine($"{"1. ",-3} Add a contact");
+            Console.WriteLine($"{"2. ",-3} List contacts");
+            Console.WriteLine($"{"3. ",-3} View detalied information about a contact");
+            Console.WriteLine($"{"4. ",-3} Remove a contact");
+            Console.WriteLine($"{"5. ",-3} Exit the application");
+            Console.WriteLine();
             Console.WriteLine("Choose a number from the list to continue.");
             command = Console.ReadLine().ToLower();
             switch (command)
@@ -36,9 +46,12 @@ public class MenuServices : IMenuService
                     ShowContactListMenu();
                     break;
                 case "3":
-                    ShowRemoveContact();
+                    ShowContactDetailMenu();
                     break;
                 case "4":
+                    ShowRemoveContact();
+                    break;
+                case "5":
                     ShowExit();
                     break;
                 default : 
@@ -69,47 +82,56 @@ public class MenuServices : IMenuService
 
         switch (result.serviceStatus)
         {
-            case Enums.ServiceStatus.SUCESS: 
+            case Enums.ServiceStatus.SUCESS:
+                Console.WriteLine();
                 Console.WriteLine("The customer was added successfully.");
+                PressToContinue();
                 break;
 
-            case Enums.ServiceStatus.CONTACT_EXISTS: 
+            case Enums.ServiceStatus.CONTACT_EXISTS:
+                Console.WriteLine();
                 Console.WriteLine("Contact allready exist.");
+                PressToContinue();
                 break;
 
             case Enums.ServiceStatus.FAILED:
+                Console.WriteLine();
                 Console.WriteLine("Adding the contact failed.");
                 Console.WriteLine("See error : " + result.Result.ToString());
+                PressToContinue();
                 break;
         }
     }
 
     public void ShowContactDetailMenu()
     {
+
+        Console.Write("Which contact do you wish to view?\nSearch by typing the email adress: ");
+        var email = Console.ReadLine()!;
+
+        var res = _contactService.GetContactFromList(email);
+
+        MenuTitle("Contact");
+        Console.WriteLine();
+
         
+        foreach (var isCorrectName in res)
+        {
+            Console.WriteLine($"Fullname: {isCorrectName.FirstName} {isCorrectName.LastName}\nEmail: {isCorrectName.Email}\nAdress: {isCorrectName.Address}\nPhonenumber: {isCorrectName.PhoneNumber}");
+        }
+        PressToContinue();
     }
 
     public void ShowContactListMenu()
     {
-        MenuTitle("Contact list");
-        var res = _contactService.GetContactsFromList();
 
-        if (res.serviceStatus == Enums.ServiceStatus.SUCESS) 
-        { 
-            if (res.Result is List<IContacts> contactList)
-            {
-                if (!contactList.Any())
-                {
-                    Console.WriteLine("Nothing in here!");
-                }
-                else
-                {
-                    foreach (var contact in contactList)
-                    {
-                        Console.WriteLine($"{contact.FirstName} {contact.LastName} <{contact.Email}>");
-                    }
-                }
-            }
+        MenuTitle("Contact list");
+        Console.WriteLine();
+
+        var res = _contactService.GetContactsFromFile();
+        foreach (var contact in res)
+        {
+            Console.WriteLine($"{contact.FirstName} {contact.LastName}" );
         }
         PressToContinue();
     }

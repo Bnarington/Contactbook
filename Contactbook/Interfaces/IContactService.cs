@@ -6,9 +6,9 @@ namespace Contactbook.Interfaces
     public interface IContactService
     {
         IServiceResult AddContactToList(IContacts contact);
-        IServiceResult GetContactFromList(Func<Contacts, bool> predicate);
-        IServiceResult GetContactsFromList();
-        IServiceResult UpdateContactList(IContacts contact);
-        IServiceResult DeleteContactFromList(Func<Contacts, bool> predicate);
+        IEnumerable<IContacts> GetContactFromList(string email);//, Func<Contacts, bool> predicate);
+        //IServiceResult GetContactsFromList();
+        IEnumerable<IContacts> GetContactsFromFile();
+        IServiceResult DeleteContactList(IContacts contact);
     }
 }
