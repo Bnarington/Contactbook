@@ -1,8 +1,9 @@
 ﻿//Inits the main menu, which in turn runs the program. 
 
+using Contactbook.Interfaces;
 using Contactbook.Services;
 
-IMenuService menuService = new MenuServices();
+IMenuServices menuService = new MenuServices();
 
 menuService.ShowMainMenu();
 
