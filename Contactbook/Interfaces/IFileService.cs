@@ -1,8 +1,11 @@
-﻿namespace Contactbook.Interfaces
+﻿using Contactbook.Models;
+
+namespace Contactbook.Interfaces
 {
     public interface IFileService
     {
         string GetFromFile();
-        bool SaveTofile(string content);
+        bool SaveToFile(Contacts content);
+        bool DeleteFromFile(string email);
     }
 }

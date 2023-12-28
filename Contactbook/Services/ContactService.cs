@@ -1,41 +1,31 @@
 ﻿using Contactbook.Enums;
 using Contactbook.Interfaces;
+using Contactbook.Models;
 using Contactbook.Models.Responses;
 using Newtonsoft.Json;
-using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.AccessControl;
+
 
 namespace Contactbook.Services;
 
 
 public class ContactService : IContactService
 {
-    private List<IContacts> _contacts = [];
+    private List<Contacts> _contacts = [];
 
-    private readonly FileService _fileService = new FileService(@"D:\Skoldokument\Cprojects\Contacts.json");
+    private readonly FileService _fileService = new FileService(@"D:\Skoldokument\Cprojects\Contacts.json"); //change this to whereever you wish to look for the json file.
 
-    private readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings()
-    {
-        Formatting = Formatting.Indented,
-        TypeNameHandling = TypeNameHandling.All
-    };
-
-    public IServiceResult AddContactToList(IContacts contact)
+    public IServiceResult AddContactToList(Contacts contact) //Adds a contact to the contact book and sends it to the json file.
     {
         IServiceResult response = new ServiceResult();
 
         try
         {
-            var res = _fileService.GetFromFile();
-
-            _contacts = JsonConvert.DeserializeObject<List<IContacts>>(res, JsonSerializerSettings)!;
-            if (!_contacts.Any(x => x.Email == contact.Email))
+            if (!_contacts.Any(x => x.Email == contact.Email)) //checks if the email exists allready in the contactbook.
             {
                 _contacts.Add(contact);
-                _fileService.SaveTofile(JsonConvert.SerializeObject(_contacts, JsonSerializerSettings));
+                _fileService.SaveToFile(contact);
+                _contacts.Clear();  //Clears the list in preparation for adding another contact. 
                 response.serviceStatus = ServiceStatus.SUCESS;               
             }
             else
@@ -53,22 +43,57 @@ public class ContactService : IContactService
         return response;
     }
 
-    public IEnumerable<IContacts> GetContactFromList(string email)//,  Func<Contacts, bool> predicate)
+    public IEnumerable<Contacts> GetContactFromList(string email) //Gets a single contact from the contact json.
     {
-        IServiceResult response = new ServiceResult();
-
         try
         {
             var contact = _fileService.GetFromFile();
             if (!string.IsNullOrEmpty(contact))
             {
-                response.serviceStatus = ServiceStatus.SUCESS;
-
-                _contacts = JsonConvert.DeserializeObject<List<IContacts>>(contact, JsonSerializerSettings)!;
-
-                _contacts = _contacts.Where(x  => x.Email == email).ToList();
+                _contacts = JsonConvert.DeserializeObject<List<Contacts>>(contact)!;
+                _contacts = _contacts.Where(x  => x.Email == email).ToList(); //Looks for a contacts email and puts that user in a list.
             }
 
+
+        }
+
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+
+        return _contacts.ToList();
+    }
+
+    public IEnumerable<Contacts> GetContactsFromFile() //Gets all contacts from the contact json.
+    {
+
+        try
+        {
+            var contact = _fileService.GetFromFile();
+            if (!string.IsNullOrEmpty(contact)) //checks if the contact json is empty before trying to deserialize it. 
+            {
+                _contacts = JsonConvert.DeserializeObject<List<Contacts>>(contact)!;
+            }
+
+        }
+
+        catch (Exception ex) 
+        {
+            Debug.WriteLine(ex.Message);
+        }
+
+        return _contacts.ToList();
+    }
+
+    public IServiceResult DeleteContactFromList(string email) //Removes a contact from the contactbook.
+    {
+        IServiceResult response = new ServiceResult();
+
+        try
+        {
+            response.serviceStatus = ServiceStatus.SUCESS;
+            _fileService.DeleteFromFile(email);
 
         }
 
@@ -79,59 +104,6 @@ public class ContactService : IContactService
             response.Result = ex.Message;
         }
 
-        return _contacts;
-    }
-
-    public IEnumerable<IContacts> GetContactsFromFile()
-    {
-        IServiceResult response = new ServiceResult();
-
-        try
-        {
-            var contact = _fileService.GetFromFile();
-            if (!string.IsNullOrEmpty(contact))
-            {
-                response.serviceStatus = ServiceStatus.SUCESS;
-                _contacts = JsonConvert.DeserializeObject<List<IContacts>>(contact)!;
-            }
-
-        }
-
-        catch (Exception ex) 
-        {
-            Debug.WriteLine(ex.Message);
-            response.serviceStatus = ServiceStatus.FAILED;
-            response.Result = ex.Message;
-        }
-
-        return _contacts;
-    }
-
-    public IServiceResult DeleteContactList(IContacts contact)
-    {
-        throw new NotImplementedException();
+        return response;
     }
 }
-
-
-
-//Scrap pile.
-
-//public IServiceResult GetContactsFromList()
-//{
-//    IServiceResult response = new ServiceResult();
-
-//    try
-//    {
-//        response.serviceStatus = Enums.ServiceStatus.SUCESS;
-//        response.Result = _contacts;
-//    }
-//    catch (Exception ex)
-//    {
-//        Debug.WriteLine(ex.Message);
-//        response.serviceStatus = Enums.ServiceStatus.FAILED;
-//        response.Result = ex.Message;
-//    }
-
-//    return response;
-//}

@@ -5,11 +5,8 @@ using Contactbook.Models;
 namespace Contactbook.Services;
 
 
-public interface IMenuService
-{
-    void ShowMainMenu();
-}
-public class MenuServices : IMenuService //This class provides all Navigation in the program.
+public class MenuServices : IMenuServices
+//This class provides all Navigation in the program.
 {
     private readonly IContactService _contactService = new ContactService();
     public void ShowMainMenu()
@@ -17,7 +14,7 @@ public class MenuServices : IMenuService //This class provides all Navigation in
         Console.WriteLine("Welcome to your phonebook.");
         MenuTitle("MAIN MENU");
         Console.WriteLine();
-        Console.WriteLine($"{"1. ", -3} Add a contact");
+        Console.WriteLine($"{"1. ",-3} Add a contact");
         Console.WriteLine($"{"2. ",-3} List contacts");
         Console.WriteLine($"{"3. ",-3} View detalied information about a contact");
         Console.WriteLine($"{"4. ",-3} Remove a contact");
@@ -54,16 +51,16 @@ public class MenuServices : IMenuService //This class provides all Navigation in
                 case "5":
                     ShowExit();
                     break;
-                default : 
+                default:
                     Console.WriteLine("\nInvalid option, press any key to try again.");
                     Console.ReadKey();
                     break;
-        }
+            }
         }
     }
     public void ShowAddMenu()
     {
-        IContacts contact = new Contacts();
+        Contacts contact = new Contacts();
 
         contact.ContactId = Guid.NewGuid();
         Console.Write("Enter firstname: ");
@@ -84,7 +81,7 @@ public class MenuServices : IMenuService //This class provides all Navigation in
         {
             case Enums.ServiceStatus.SUCESS:
                 Console.WriteLine();
-                Console.WriteLine("The customer was added successfully.");
+                Console.WriteLine("The contact was added successfully.");
                 PressToContinue();
                 break;
 
@@ -114,7 +111,7 @@ public class MenuServices : IMenuService //This class provides all Navigation in
         MenuTitle("Contact");
         Console.WriteLine();
 
-        
+
         foreach (var isCorrectName in res)
         {
             Console.WriteLine($"Fullname: {isCorrectName.FirstName} {isCorrectName.LastName}\nEmail: {isCorrectName.Email}\nAdress: {isCorrectName.Address}\nPhonenumber: {isCorrectName.PhoneNumber}");
@@ -131,7 +128,7 @@ public class MenuServices : IMenuService //This class provides all Navigation in
         var res = _contactService.GetContactsFromFile();
         foreach (var contact in res)
         {
-            Console.WriteLine($"{contact.FirstName} {contact.LastName}" );
+            Console.WriteLine($"{contact.FirstName} {contact.LastName}");
         }
         PressToContinue();
     }
@@ -139,8 +136,37 @@ public class MenuServices : IMenuService //This class provides all Navigation in
 
     public void ShowRemoveContact()
     {
-        
+
+        MenuTitle("Remove a contact.");
+        Console.WriteLine();
+
+        Console.Write("Enter the email of the person you wish to remove: ");
+        var email = Console.ReadLine();
+
+        _contactService.DeleteContactFromList(email!);
+
+        var result = _contactService.DeleteContactFromList(email);
+
+        switch (result.serviceStatus)
+        {
+            case Enums.ServiceStatus.SUCESS:
+                Console.WriteLine();
+                Console.WriteLine("The contact was successfully removed.");
+                PressToContinue();
+                break;
+
+            case Enums.ServiceStatus.FAILED:
+                Console.WriteLine();
+                Console.WriteLine("Removing the contact failed.");
+                Console.WriteLine("See error : " + result.Result.ToString());
+                PressToContinue();
+                break;
+        }
+
     }
+
+
+    //These functions control diffrent elements that are occuring in all the diffrent menu options.
 
     private void ShowExit()
     {
@@ -154,15 +180,14 @@ public class MenuServices : IMenuService //This class provides all Navigation in
         }
     }
 
-
-    private void MenuTitle (string title)
+    private void MenuTitle(string title)
     {
         Console.Clear();
         Console.WriteLine($"########### {title} ###########");
         Console.WriteLine();
     }
 
-    private void PressToContinue ()
+    private void PressToContinue()
     {
         Console.WriteLine();
         Console.WriteLine("Press any key to continue;");
