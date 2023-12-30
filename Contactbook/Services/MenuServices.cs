@@ -11,6 +11,7 @@ public class MenuServices : IMenuServices
     private readonly IContactService _contactService = new ContactService();
     public void ShowMainMenu()
     {
+        //this print the initial Main Menu when the program starts.
         Console.WriteLine("Welcome to your phonebook.");
         MenuTitle("MAIN MENU");
         Console.WriteLine();
@@ -24,6 +25,7 @@ public class MenuServices : IMenuServices
         string command = "";
         while (command != "0")
         {
+            //This prints the menu again when a function has been used.
             MenuTitle("MAIN MENU");
             Console.WriteLine();
             Console.WriteLine($"{"1. ",-3} Add a contact");
@@ -58,7 +60,7 @@ public class MenuServices : IMenuServices
             }
         }
     }
-    public void ShowAddMenu()
+    public void ShowAddMenu() //This menu option is used to add a contact.
     {
         Contacts contact = new Contacts();
 
@@ -100,26 +102,26 @@ public class MenuServices : IMenuServices
         }
     }
 
-    public void ShowContactDetailMenu()
+    public void ShowContactDetailMenu() //This is used to show detailed contact information, it picks the contact up using the email of the contact.
     {
 
         Console.Write("Which contact do you wish to view?\nSearch by typing the email adress: ");
         var email = Console.ReadLine()!;
 
-        var res = _contactService.GetContactFromList(email);
+        var res = _contactService.GetContactFromList(email); //Gathers the response from the Contactlist. 
 
         MenuTitle("Contact");
         Console.WriteLine();
 
 
-        foreach (var isCorrectName in res)
+        foreach (var isCorrectName in res) //Prints the contact in an appeasing manner. 
         {
             Console.WriteLine($"Fullname: {isCorrectName.FirstName} {isCorrectName.LastName}\nEmail: {isCorrectName.Email}\nAdress: {isCorrectName.Address}\nPhonenumber: {isCorrectName.PhoneNumber}");
         }
         PressToContinue();
     }
 
-    public void ShowContactListMenu()
+    public void ShowContactListMenu() //Shows the name of everyone in the contact list.
     {
 
         MenuTitle("Contact list");
@@ -134,16 +136,16 @@ public class MenuServices : IMenuServices
     }
 
 
-    public void ShowRemoveContact()
+    public void ShowRemoveContact() //lets you remove a contact from the contact list by typing out the email, todo: Add a better way to let the user choose who is to be removed.
     {
 
         MenuTitle("Remove a contact.");
         Console.WriteLine();
 
         Console.Write("Enter the email of the person you wish to remove: ");
-        var email = Console.ReadLine();
+        var email = Console.ReadLine()!;
 
-        _contactService.DeleteContactFromList(email!);
+        _contactService.DeleteContactFromList(email);
 
         var result = _contactService.DeleteContactFromList(email);
 
