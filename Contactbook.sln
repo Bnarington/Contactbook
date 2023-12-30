@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contactbook", "Contactbook\Contactbook.csproj", "{D9BE1C28-BC76-42A6-8E0C-9C1D6D21B503}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contactbook", "Contactbook\Contactbook.csproj", "{D9BE1C28-BC76-42A6-8E0C-9C1D6D21B503}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactBook.test", "ContactBook.test\ContactBook.test.csproj", "{5CF964E4-0D7D-41F2-9657-FB94E73D040A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D9BE1C28-BC76-42A6-8E0C-9C1D6D21B503}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9BE1C28-BC76-42A6-8E0C-9C1D6D21B503}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9BE1C28-BC76-42A6-8E0C-9C1D6D21B503}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CF964E4-0D7D-41F2-9657-FB94E73D040A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CF964E4-0D7D-41F2-9657-FB94E73D040A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CF964E4-0D7D-41F2-9657-FB94E73D040A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CF964E4-0D7D-41F2-9657-FB94E73D040A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
