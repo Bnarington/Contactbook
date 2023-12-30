@@ -24,6 +24,7 @@ public class ContactService : IContactService
         {
             if (!_contacts.Any(x => x.Email == contact.Email)) //checks if the email exists allready in the contactbook.
             {
+                _contacts.Clear(); //Clears the test data out of the system.
                 _contacts.Add(contact);
                 _fileService.SaveToFile(contact);
                 _contacts.Clear();  //Clears the list in preparation for adding another contact. 
